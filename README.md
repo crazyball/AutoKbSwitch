@@ -1,7 +1,3 @@
-
-
-
-
 <p align="center"><img src="assets/icon.png" alt="KbSwitch icon" width="128"></p>
 
 # KbSwitch
