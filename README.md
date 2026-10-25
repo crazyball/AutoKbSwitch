@@ -8,7 +8,7 @@ Small Windows app that **automatically switches the keyboard layout depending on
 
 Typical case: an AZERTY PC and a game that doesn't support AZERTY. AutoKbSwitch switches to QWERTY when the game gets focus and back to AZERTY when you Alt+Tab out. Any pair of layouts installed in Windows works.
 
-https://github.com/user-attachments/assets/1533e9a0-ca44-4016-a59d-1df5ed638a6d
+https://github.com/user-attachments/assets/669534e3-78d1-49fb-9628-2610a0a58da1
 
 ## Features
 
