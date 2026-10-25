@@ -1,3 +1,7 @@
+
+
+
+
 <p align="center"><img src="assets/icon.png" alt="KbSwitch icon" width="128"></p>
 
 # KbSwitch
@@ -8,10 +12,7 @@ Small Windows app that **automatically switches the keyboard layout depending on
 
 Typical case: an AZERTY PC and a game that doesn't support AZERTY. KbSwitch switches to QWERTY when the game gets focus and back to AZERTY when you Alt+Tab out. Any pair of layouts installed in Windows works.
 
-<p align="center">
-  <a href="assets/demo.mp4"><img src="assets/demo-poster.jpg" alt="KbSwitch demo video (20 seconds): click to watch" width="720"></a><br>
-  <sub>▶ 20-second demo (click to watch)</sub>
-</p>
+https://github.com/user-attachments/assets/1533e9a0-ca44-4016-a59d-1df5ed638a6d
 
 ## Features
 
