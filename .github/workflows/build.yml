@@ -1,0 +1,100 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish
+        run: dotnet publish KbSwitch.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish
+
+      - name: Check the version
+        shell: pwsh
+        run: |
+          $built = (Get-Item publish/KbSwitch.exe).VersionInfo.ProductVersion
+          Write-Host "Built version: $built"
+          if ($env:GITHUB_REF_TYPE -eq 'tag') {
+            # The tag must match the version declared in KbSwitch.csproj (e.g. v0.0.1)
+            [xml]$proj = Get-Content KbSwitch.csproj
+            $prefix = $proj.Project.PropertyGroup.VersionPrefix
+            $suffix = $proj.Project.PropertyGroup.VersionSuffix
+            $expected = "v$prefix"
+            if ($suffix) { $expected += "-$suffix" }
+            if ($env:GITHUB_REF_NAME -ne $expected) {
+              Write-Error "Tag '$env:GITHUB_REF_NAME' does not match the csproj version '$expected'."
+              exit 1
+            }
+          }
+
+      - name: Checksum
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item publish/KbSwitch.exe dist/KbSwitch.exe
+          $hash = (Get-FileHash dist/KbSwitch.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  KbSwitch.exe" | Set-Content dist/KbSwitch.exe.sha256 -Encoding ascii
+          Get-Content dist/KbSwitch.exe.sha256
+
+      # Code signing (SignPath) will go here once the project is approved:
+      # sign dist/KbSwitch.exe, then compute the checksum of the signed file.
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KbSwitch
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: KbSwitch
+          path: dist
+
+      - name: Create the GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $version = $tag.TrimStart('v')
+
+          # Release notes = the matching section of CHANGELOG.md, plus install hints
+          $changelog = Get-Content CHANGELOG.md -Raw -Encoding utf8
+          $section = ''
+          if ($changelog -match "(?s)## \[$([regex]::Escape($version))\]\r?\n(.*?)(?=\r?\n## \[|\z)") {
+            $section = $Matches[1].Trim()
+          }
+          $notes = @"
+          $section
+
+          ---
+          Requires the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0). Verify the download with ``KbSwitch.exe.sha256`` (SHA-256).
+          "@
+          Set-Content release-notes.md $notes -Encoding utf8
+
+          $ghArgs = @($tag, 'dist/KbSwitch.exe', 'dist/KbSwitch.exe.sha256', '--title', "KbSwitch $version", '--notes-file', 'release-notes.md', '--verify-tag')
+          if ($version.Contains('-') -or $version.StartsWith('0.')) { $ghArgs += '--prerelease' }   # 0.x = still unstable; also alpha / beta / rc
+          gh release create @ghArgs

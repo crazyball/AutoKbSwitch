@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <!-- Icon of the exe file (Explorer, downloads). Regenerate with tools\make-icon.ps1 -->
+    <ApplicationIcon>KbSwitch.ico</ApplicationIcon>
+    <!-- Also runs on .NET 9 / 10 if that is what is installed -->
+    <RollForward>LatestMajor</RollForward>
+    <AssemblyName>KbSwitch</AssemblyName>
+    <RootNamespace>KbSwitch</RootNamespace>
+    <VersionPrefix>0.0.1</VersionPrefix>
+    <!-- The "-hash" suffix is added by the SetGitVersion target below, not by the SDK's "+hash" build metadata -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Company>Holocron Factory</Company>
+    <Authors>Holocron Factory</Authors>
+    <Product>KbSwitch</Product>
+    <Copyright>Copyright (c) 2026 Holocron Factory (Loïc Ambrosini - CraZyBaLL)</Copyright>
+    <Description>Automatically switches the keyboard layout depending on the foreground application (Windows).</Description>
+    <RepositoryUrl>https://github.com/crazyball/KbSwitch</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <!-- The same .ico is embedded as a resource: the window, the tray and the About box load it at runtime (AppIcon.cs) -->
+  <ItemGroup>
+    <EmbeddedResource Include="KbSwitch.ico" LogicalName="KbSwitch.ico" />
+  </ItemGroup>
+
+  <!-- Alpha: the short git hash becomes the pre-release label (InformationalVersion = 0.0.x-hash, "-dirty" if uncommitted changes).
+       Without git (e.g. a source zip) the version is just 0.0.x. -->
+  <Target Name="SetGitVersion" BeforeTargets="GetAssemblyAttributes">
+    <Exec Command="git describe --always --dirty --exclude=* --abbrev=7" ConsoleToMSBuild="true"
+          IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low">
+      <Output PropertyName="GitHash" TaskParameter="ConsoleOutput" />
+    </Exec>
+    <PropertyGroup Condition="'$(GitHash)' != ''">
+      <InformationalVersion>$(VersionPrefix)-$(GitHash)</InformationalVersion>
+    </PropertyGroup>
+  </Target>
+
+</Project>
