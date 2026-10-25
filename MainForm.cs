@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Win32;
 
-namespace KbSwitch;
+namespace AutoKbSwitch;
 
 internal sealed record LayoutItem(string? Key, string Label)
 {
@@ -11,7 +11,7 @@ internal sealed record LayoutItem(string? Key, string Label)
 internal sealed class MainForm : Form
 {
     const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    const string RunName = "KbSwitch";
+    const string RunName = "AutoKbSwitch";
 
     readonly AppConfig cfg;
     readonly Switcher switcher;
@@ -28,19 +28,19 @@ internal sealed class MainForm : Form
     readonly ToolStripMenuItem miStartup = new("Start with &Windows")
     {
         CheckOnClick = true,
-        ToolTipText = "Launch KbSwitch hidden in the tray when you sign in to Windows."
+        ToolTipText = "Launch AutoKbSwitch hidden in the tray when you sign in to Windows."
     };
     readonly ToolStripMenuItem miStartMinimized = new("Start &minimized in the tray")
     {
         CheckOnClick = true,
-        ToolTipText = "Start KbSwitch hidden in the tray instead of showing its window.\n" +
+        ToolTipText = "Start AutoKbSwitch hidden in the tray instead of showing its window.\n" +
                       "(\"Start with Windows\" always starts hidden, whatever this setting.)"
     };
     readonly ToolStripMenuItem miCloseToTray = new("&Keep running in the tray when the window is closed")
     {
         CheckOnClick = true,
-        ToolTipText = "Ticked: the close button hides the window and KbSwitch keeps switching layouts.\n" +
-                      "Unticked: the close button quits KbSwitch, which stops the automatic switching."
+        ToolTipText = "Ticked: the close button hides the window and AutoKbSwitch keeps switching layouts.\n" +
+                      "Unticked: the close button quits AutoKbSwitch, which stops the automatic switching."
     };
     readonly ToolStripMenuItem miDefault = new("&Default layout (everything else)")
     {
@@ -65,7 +65,7 @@ internal sealed class MainForm : Form
 
         AutoScaleDimensions = new SizeF(96F, 96F);
         AutoScaleMode = AutoScaleMode.Dpi;
-        Text = $"KbSwitch {AppInfo.Version}";
+        Text = $"AutoKbSwitch {AppInfo.Version}";
         Icon = AppIcon.Create();
         StartPosition = FormStartPosition.CenterScreen;
         Size = new Size(960, 580);
@@ -112,7 +112,7 @@ internal sealed class MainForm : Form
         mSettings.DropDownItems.Add(new ToolStripSeparator());
         mSettings.DropDownItems.Add(miDefault);
         var mHelp = new ToolStripMenuItem("&Help");
-        mHelp.DropDownItems.Add(new ToolStripMenuItem("&About KbSwitch…", null, (_, _) => ShowAbout()));
+        mHelp.DropDownItems.Add(new ToolStripMenuItem("&About AutoKbSwitch…", null, (_, _) => ShowAbout()));
         menu.ShowItemToolTips = true;
         menu.Items.Add(mFile);
         menu.Items.Add(mSettings);
@@ -129,11 +129,11 @@ internal sealed class MainForm : Form
         var trayMenu = new ContextMenuStrip();
         trayMenu.Items.Add("Open", null, (_, _) => ShowMain());
         trayMenu.Items.Add(miEnabled);
-        trayMenu.Items.Add("About KbSwitch…", null, (_, _) => ShowAbout());
+        trayMenu.Items.Add("About AutoKbSwitch…", null, (_, _) => ShowAbout());
         trayMenu.Items.Add(new ToolStripSeparator());
         trayMenu.Items.Add("Quit", null, (_, _) => Quit());
 
-        tray = new NotifyIcon { Icon = AppIcon.Create(SystemInformation.SmallIconSize), Text = "KbSwitch", Visible = true, ContextMenuStrip = trayMenu };
+        tray = new NotifyIcon { Icon = AppIcon.Create(SystemInformation.SmallIconSize), Text = "AutoKbSwitch", Visible = true, ContextMenuStrip = trayMenu };
         tray.DoubleClick += (_, _) => ShowMain();
 
         // ---------- Engine ----------
@@ -141,7 +141,7 @@ internal sealed class MainForm : Form
         switcher.Switched += (exe, label) =>
         {
             status.Text = $"{exe} → {label}";
-            string t = $"KbSwitch: {label}";
+            string t = $"AutoKbSwitch: {label}";
             tray.Text = t.Length > 63 ? t[..63] : t;
         };
 
@@ -278,7 +278,7 @@ internal sealed class MainForm : Form
         FillProcesses();
     }
 
-    /// <summary>True for an app launched by the user: visible, not cloaked, not under C:\Windows, not KbSwitch.</summary>
+    /// <summary>True for an app launched by the user: visible, not cloaked, not under C:\Windows, not AutoKbSwitch.</summary>
     static bool IsUserApp(int pid, IntPtr hwnd, int myPid)
     {
         if (pid == myPid) return false;
@@ -317,7 +317,7 @@ internal sealed class MainForm : Form
     {
         if (lvProc.SelectedItems.Count == 0)
         {
-            MessageBox.Show(this, "Select a program in the left list first.", "KbSwitch");
+            MessageBox.Show(this, "Select a program in the left list first.", "AutoKbSwitch");
             return;
         }
         Associate(lvProc.SelectedItems[0].Text);
@@ -413,7 +413,7 @@ internal sealed class MainForm : Form
             Hide();
             if (!cfg.TrayHintShown)
             {
-                tray.ShowBalloonTip(4000, "KbSwitch", "KbSwitch keeps running in the notification area. Right-click its icon and choose Quit to exit.", ToolTipIcon.Info);
+                tray.ShowBalloonTip(4000, "AutoKbSwitch", "AutoKbSwitch keeps running in the notification area. Right-click its icon and choose Quit to exit.", ToolTipIcon.Info);
                 cfg.TrayHintShown = true;
                 cfg.Save();
             }

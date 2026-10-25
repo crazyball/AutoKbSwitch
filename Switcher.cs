@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace KbSwitch;
+namespace AutoKbSwitch;
 
 /// <summary>Listens for foreground-window changes and applies the right keyboard layout.</summary>
 internal sealed class Switcher : IDisposable

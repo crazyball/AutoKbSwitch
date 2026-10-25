@@ -21,16 +21,16 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Publish
-        run: dotnet publish KbSwitch.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish
+        run: dotnet publish AutoKbSwitch.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish
 
       - name: Check the version
         shell: pwsh
         run: |
-          $built = (Get-Item publish/KbSwitch.exe).VersionInfo.ProductVersion
+          $built = (Get-Item publish/AutoKbSwitch.exe).VersionInfo.ProductVersion
           Write-Host "Built version: $built"
           if ($env:GITHUB_REF_TYPE -eq 'tag') {
-            # The tag must match the version declared in KbSwitch.csproj (e.g. v0.0.1)
-            [xml]$proj = Get-Content KbSwitch.csproj
+            # The tag must match the version declared in AutoKbSwitch.csproj (e.g. v0.0.1)
+            [xml]$proj = Get-Content AutoKbSwitch.csproj
             $prefix = $proj.Project.PropertyGroup.VersionPrefix
             $suffix = $proj.Project.PropertyGroup.VersionSuffix
             $expected = "v$prefix"
@@ -45,17 +45,17 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item publish/KbSwitch.exe dist/KbSwitch.exe
-          $hash = (Get-FileHash dist/KbSwitch.exe -Algorithm SHA256).Hash.ToLower()
-          "$hash  KbSwitch.exe" | Set-Content dist/KbSwitch.exe.sha256 -Encoding ascii
-          Get-Content dist/KbSwitch.exe.sha256
+          Copy-Item publish/AutoKbSwitch.exe dist/AutoKbSwitch.exe
+          $hash = (Get-FileHash dist/AutoKbSwitch.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  AutoKbSwitch.exe" | Set-Content dist/AutoKbSwitch.exe.sha256 -Encoding ascii
+          Get-Content dist/AutoKbSwitch.exe.sha256
 
       # Code signing (SignPath) will go here once the project is approved:
-      # sign dist/KbSwitch.exe, then compute the checksum of the signed file.
+      # sign dist/AutoKbSwitch.exe, then compute the checksum of the signed file.
 
       - uses: actions/upload-artifact@v7
         with:
-          name: KbSwitch
+          name: AutoKbSwitch
           path: dist/*
           if-no-files-found: error
 
@@ -70,7 +70,7 @@ jobs:
 
       - uses: actions/download-artifact@v8
         with:
-          name: KbSwitch
+          name: AutoKbSwitch
           path: dist
 
       - name: Create the GitHub release
@@ -91,10 +91,10 @@ jobs:
           $section
 
           ---
-          Requires the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0). Verify the download with ``KbSwitch.exe.sha256`` (SHA-256).
+          Requires the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0). Verify the download with ``AutoKbSwitch.exe.sha256`` (SHA-256).
           "@
           Set-Content release-notes.md $notes -Encoding utf8
 
-          $ghArgs = @($tag, 'dist/KbSwitch.exe', 'dist/KbSwitch.exe.sha256', '--title', "KbSwitch $version", '--notes-file', 'release-notes.md', '--verify-tag')
+          $ghArgs = @($tag, 'dist/AutoKbSwitch.exe', 'dist/AutoKbSwitch.exe.sha256', '--title', "AutoKbSwitch $version", '--notes-file', 'release-notes.md', '--verify-tag')
           if ($version.Contains('-') -or $version.StartsWith('0.')) { $ghArgs += '--prerelease' }   # 0.x = still unstable; also alpha / beta / rc
           gh release create @ghArgs

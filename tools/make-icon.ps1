@@ -1,4 +1,4 @@
-# Generates KbSwitch.ico (embedded in the exe through <ApplicationIcon> and used by the app at runtime)
+# Generates AutoKbSwitch.ico (embedded in the exe through <ApplicationIcon> and used by the app at runtime)
 # from the master artwork assets\icon.png (512x512, transparent corners).
 #
 # Every standard size is stored in a single .ico file: 32-bit BMP entries up to 128 px (read by every
@@ -8,7 +8,7 @@
 
 param(
     [string]$Source = (Join-Path $PSScriptRoot '..\assets\icon.png'),
-    [string]$Out = (Join-Path $PSScriptRoot '..\KbSwitch.ico')
+    [string]$Out = (Join-Path $PSScriptRoot '..\AutoKbSwitch.ico')
 )
 
 Add-Type -AssemblyName System.Drawing

@@ -1,6 +1,6 @@
 @echo off
 cd /d "%~dp0"
-echo Building KbSwitch...
+echo Building AutoKbSwitch...
 dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish
 if errorlevel 1 (
   echo.
@@ -9,6 +9,6 @@ if errorlevel 1 (
   exit /b 1
 )
 echo.
-echo Done: publish\KbSwitch.exe
+echo Done: publish\AutoKbSwitch.exe
 explorer publish
 pause

@@ -1,14 +1,14 @@
-namespace KbSwitch;
+namespace AutoKbSwitch;
 
 internal static class Program
 {
     [STAThread]
     static void Main(string[] args)
     {
-        using var mutex = new Mutex(true, "KbSwitch_SingleInstance_7f3a", out bool first);
+        using var mutex = new Mutex(true, "AutoKbSwitch_SingleInstance_7f3a", out bool first);
         if (!first)
         {
-            MessageBox.Show("KbSwitch is already running (see the icon in the notification area).", "KbSwitch");
+            MessageBox.Show("AutoKbSwitch is already running (see the icon in the notification area).", "AutoKbSwitch");
             return;
         }
 

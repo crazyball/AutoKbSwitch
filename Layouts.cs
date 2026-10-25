@@ -1,4 +1,4 @@
-namespace KbSwitch;
+namespace AutoKbSwitch;
 
 internal static class Layouts
 {

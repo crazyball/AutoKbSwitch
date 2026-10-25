@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace KbSwitch;
+namespace AutoKbSwitch;
 
 public sealed class AppRule
 {
@@ -18,11 +18,11 @@ public sealed class AppConfig
     public bool CloseToTray { get; set; } = true;   // false = closing the window really quits the app
     public List<AppRule> Rules { get; set; } = new();
 
-    // KBSWITCH_CONFIG = full path of an alternative config.json (testing: avoids touching %APPDATA%)
+    // AUTOKBSWITCH_CONFIG = full path of an alternative config.json (testing: avoids touching %APPDATA%)
     static readonly string FilePath =
-        Environment.GetEnvironmentVariable("KBSWITCH_CONFIG") is { Length: > 0 } custom
+        Environment.GetEnvironmentVariable("AUTOKBSWITCH_CONFIG") is { Length: > 0 } custom
             ? Path.GetFullPath(custom)
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "KbSwitch", "config.json");
+            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AutoKbSwitch", "config.json");
     static readonly string Dir = Path.GetDirectoryName(FilePath)!;
     static readonly JsonSerializerOptions Opts = new() { WriteIndented = true };
 

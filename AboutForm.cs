@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace KbSwitch;
+namespace AutoKbSwitch;
 
-/// <summary>Version / copyright / project URL, read from the assembly metadata (see KbSwitch.csproj).</summary>
+/// <summary>Version / copyright / project URL, read from the assembly metadata (see AutoKbSwitch.csproj).</summary>
 internal static class AppInfo
 {
-    public const string ProjectUrl = "https://github.com/crazyball/KbSwitch";
+    public const string ProjectUrl = "https://github.com/crazyball/AutoKbSwitch";
 
     static readonly Assembly Asm = typeof(AppInfo).Assembly;
 
@@ -21,7 +21,7 @@ internal sealed class AboutForm : Form
 {
     public AboutForm()
     {
-        Text = "About KbSwitch";
+        Text = "About AutoKbSwitch";
         Icon = AppIcon.Create();
         FormBorderStyle = FormBorderStyle.FixedDialog;
         StartPosition = FormStartPosition.CenterParent;
@@ -50,13 +50,13 @@ internal sealed class AboutForm : Form
         };
         panel.Controls.Add(new Label
         {
-            Text = "KbSwitch", AutoSize = true, Font = new Font("Segoe UI", 16f, FontStyle.Bold)
+            Text = "AutoKbSwitch", AutoSize = true, Font = new Font("Segoe UI", 16f, FontStyle.Bold)
         });
         panel.Controls.Add(Line($"Version {AppInfo.Version}"));
         panel.Controls.Add(Line("Automatically switches the keyboard layout depending on the foreground application.", top: 10));
         panel.Controls.Add(Line(AppInfo.Copyright, top: 10));
         panel.Controls.Add(Line("Released under the MIT license."));
-        panel.Controls.Add(Line("KbSwitch does not collect or send any data.", top: 10));
+        panel.Controls.Add(Line("AutoKbSwitch does not collect or send any data.", top: 10));
         link.Margin = new Padding(3, 10, 3, 3);
         panel.Controls.Add(link);
         ok.Margin = new Padding(3, 14, 3, 3);
