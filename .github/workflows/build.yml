@@ -53,7 +53,7 @@ jobs:
       # Code signing (SignPath) will go here once the project is approved:
       # sign dist/KbSwitch.exe, then compute the checksum of the signed file.
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: KbSwitch
           path: dist/*
