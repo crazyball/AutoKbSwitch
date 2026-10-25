@@ -48,6 +48,20 @@ The config is stored in `%APPDATA%\KbSwitch\config.json`. Set the `KBSWITCH_CONF
 - The Windows Alt+Shift shortcut can clash with game keys; you can disable it in the Windows language settings.
 - Config keys depend on the Windows display language: changing it can orphan existing rules.
 
+## What KbSwitch changes on your system, and how to uninstall
+
+KbSwitch has no installer: it is a single `KbSwitch.exe`. It only writes:
+
+- its settings file, `%APPDATA%\KbSwitch\config.json`;
+- if you tick **Settings → Start with Windows**, one value named `KbSwitch` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` (current user only, no administrator rights).
+
+To remove it completely:
+
+1. Untick **Settings → Start with Windows** (this deletes the registry value).
+2. Choose **File → Quit**.
+3. Delete `KbSwitch.exe`.
+4. Optionally delete the `%APPDATA%\KbSwitch` folder.
+
 ## Privacy
 
 No data is sent anywhere. KbSwitch does not use the network; the only outgoing action is opening the project page in your browser when you click the link in **Help → About**.
